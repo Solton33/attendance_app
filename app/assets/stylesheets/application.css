@@ -1,0 +1,91 @@
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */
+
+ body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f6f9;
+  font-family: sans-serif;
+}
+
+.container {
+  width: 400px;
+  text-align: center;
+}
+
+.date {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.current-time {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.status {
+  margin: 15px 0;
+}
+
+.status-labels,
+.status-times {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.status-labels {
+  font-size: 14px;
+  color: #666;
+}
+
+.status-times {
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+.button-row form {
+  width: 48%;
+}
+
+.button-row button,
+.button-row input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 20px;
+}
+
+
+
+
+
+.flash-area {
+  margin-top: 10px;
+  min-height: 20px;
+}
+
+.flash-notice {
+  color: green;
+}
+
+.flash-alert {
+  color: red;
+}
