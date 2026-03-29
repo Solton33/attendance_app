@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     collection do
       post :clock_in
       post :clock_out
+      post :setting_clock_in
+      post :setting_clock_out
     end
   end
 
