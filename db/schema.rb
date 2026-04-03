@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_22_170403) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_03_085244) do
   create_table "attendances", force: :cascade do |t|
     t.integer "break_minutes"
     t.datetime "created_at", null: false
-    t.time "end_time"
+    t.datetime "end_time"
     t.integer "setting_id", null: false
-    t.time "start_time"
+    t.datetime "start_time"
     t.datetime "updated_at", null: false
     t.date "work_date"
     t.integer "work_minutes"
@@ -27,8 +27,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_170403) do
     t.boolean "active", default: false, null: false
     t.integer "break_time", default: 0, null: false
     t.datetime "created_at", null: false
-    t.time "default_end_time"
-    t.time "default_start_time"
+    t.datetime "default_end_time"
+    t.datetime "default_start_time"
     t.datetime "updated_at", null: false
   end
 
