@@ -124,6 +124,9 @@ class AttendancesController < ApplicationController
 
   def setting_clock_out
 
+    # 打刻時の時間を設定
+    now = @now
+
     # 当日の設定がされていない場合、ここで設定を紐づけ（activeがtrueのものを設定）
     @attendance.setting ||= @setting
     
@@ -134,13 +137,13 @@ class AttendancesController < ApplicationController
     end
 
     # 打刻日時から日付を取得、時刻を設定時刻へ変更する
-    set_end_time = @now.change(
+    set_end_time = now.change(
       hour: @setting.default_end_time.hour,
       min: @setting.default_end_time.min
       )
 
     # 取得した日時が、定時退勤より前だった場合はエラー
-    if @now < set_end_time
+    if now < set_end_time
       flash[:alert] = "打刻した時間が設定した退勤時刻より前です。"
       redirect_to root_path and return
     end
