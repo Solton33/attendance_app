@@ -2,33 +2,21 @@ class AttendancesController < ApplicationController
   before_action :set_attendance
   before_action :set_setting
 
-#################### 出退勤時刻の表示 ########################  
+#################### 出退勤時刻の表示 ########################
   def index
   end
 
 ############################################ 手動出退勤処理 ################################################
 
-#################### 出勤処理 ######################## 
+#################### 出勤処理 ########################
   def clock_in
 
-    # 退勤打刻を既に打っている場合は出勤できないようにする
-    if @attendance.end_time.present?
-      flash[:alert] = "退勤打刻が打刻済みです"
-      redirect_to root_path and return
-    end
+    message, result = @attendance.clock_in(@setting,@now)
 
-    # 設定を紐づけ（activeがtrueのものを設定）
-    @attendance.setting = @setting
-
-    # 出勤日に出勤打刻があるかの確認
-    if @attendance.start_time.nil?
-      @attendance.start_time = @now
-      @attendance.break_minutes = @setting.break_time
-      @attendance.save!
-
-      flash[:notice] = "出勤を打刻しました"
+    if result
+      flash[:notice] = message
     else
-      flash[:alert] = "すでに出勤打刻済みです"
+      flash[:alert] = message
     end
 
     # 打刻後にindex画面へ戻る
@@ -38,11 +26,11 @@ class AttendancesController < ApplicationController
 #################### 退勤処理 ########################
   def clock_out
     # 出勤打刻がない場合、ここで設定を紐づけ（activeがtrueのものを設定）
-    if @attendance.setting.nil? 
+    if @attendance.setting.nil?
       @attendance.setting = @setting
     end
 
-    # 今日の日付がない = 出勤がされていないので警告後に退勤のみ打刻 
+    # 今日の日付がない = 出勤がされていないので警告後に退勤のみ打刻
     if @attendance.start_time.nil? && @attendance.end_time.nil?
       flash[:alert] = "出勤打刻がされていません、後ほど修正してください"
 
@@ -59,7 +47,7 @@ class AttendancesController < ApplicationController
     else
       @attendance.end_time = @now
       @attendance.save!
-      flash[:notice] = "退勤を打刻しました" 
+      flash[:notice] = "退勤を打刻しました"
     end
 
     # 打刻後にindex画面へ戻る
@@ -71,11 +59,11 @@ class AttendancesController < ApplicationController
 
 #################### 定時出勤処理 ########################
   def setting_clock_in
-    
+
     if @setting.default_start_time.nil?
       flash[:alert] = "定時出勤が設定されていません"
       redirect_to root_path and return
-    
+
     else
       # 打刻日時から日付を取得、時刻を設定時刻へ変更する
       set_start_time = @now.change(
@@ -94,12 +82,12 @@ class AttendancesController < ApplicationController
     if @now > set_start_time
       flash[:alert] = "打刻した時間が設定した出勤時刻を過ぎています"
       redirect_to root_path and return
-    
+
     elsif set_start_time - 30.minutes > @now
       flash[:alert] = "打刻時間が早過ぎます、設定した時刻より30分未満の時点で打刻をしてください。"
       redirect_to root_path and return
-    
-    else 
+
+    else
       # 設定を紐づけ（activeがtrueのものを設定）
       @attendance.setting = @setting
 
@@ -129,7 +117,7 @@ class AttendancesController < ApplicationController
 
     # 当日の設定がされていない場合、ここで設定を紐づけ（activeがtrueのものを設定）
     @attendance.setting ||= @setting
-    
+
     # 定時退勤の設定があるか確認
     if @setting.default_end_time.nil?
       flash[:alert] = "定時退勤が設定されていません"
@@ -153,7 +141,7 @@ class AttendancesController < ApplicationController
       flash[:alert] = "退勤打刻済みです。"
       redirect_to root_path and return
     end
-    
+
     # 出勤打刻があるかの判定
     if @attendance.start_time.nil?
       flash[:alert] = "出勤打刻がされていません、後ほど修正してください"
@@ -167,7 +155,7 @@ class AttendancesController < ApplicationController
     # 打刻後にindex画面へ戻る
     redirect_to root_path
   end
-  
+
 #################### private処理 ########################
 
   private
