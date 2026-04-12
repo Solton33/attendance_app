@@ -19,7 +19,7 @@ class Attendance < ApplicationRecord
 
       [ "出勤時刻を打刻しました", true ]
     else
-      [ "すでに出勤打刻済みです", false ]
+      [ "出勤打刻は打刻済みです", false ]
     end
   end
 
@@ -47,5 +47,47 @@ class Attendance < ApplicationRecord
     save!
 
     [ warning, "退勤時刻を打刻しました", true ]
+  end
+
+
+  #################### 定時出勤処理 ########################
+  def setting_clock_in(setting, now)
+    # 退勤済みチェック
+    if end_time.present?
+      return [ "退勤時刻は打刻済みです", false ]
+    end
+
+    # setting存在チェック
+    if setting.default_start_time.nil?
+      return [ "定時出勤が未設定です", false ]
+    end
+
+    # set_start_time作成
+    set_start_time = now.change(
+      hour: setting.default_start_time.hour,
+      min: setting.default_start_time.min
+    )
+
+    # 遅刻、早出勤、出勤済みのチェック
+    if now > set_start_time
+      [ "打刻時間が定時時間を過ぎています", false ]
+
+    elsif set_start_time - 30.minutes > now
+      [ "打刻時間が早過ぎます、設定した時刻より30分未満の時点で打刻をしてください。", false ]
+
+    elsif start_time.present?
+      [ "出勤打刻は打刻済みです", false ]
+
+    else
+      # setting紐付け
+      self.setting ||= setting
+
+      # 保存
+      self.start_time = set_start_time
+      self.break_minutes = setting.break_time
+      save!
+
+      [ "出勤時刻を打刻しました", true ]
+    end
   end
 end
