@@ -45,47 +45,12 @@ class AttendancesController < ApplicationController
 
   #################### 定時出勤処理 ########################
   def setting_clock_in
-    if @setting.default_start_time.nil?
-      flash[:alert] = "定時出勤が設定されていません"
-      redirect_to root_path and return
+    message, result = @attendance.setting_clock_in(@setting, @now)
 
+    if result
+      flash[:notice] = message
     else
-      # 打刻日時から日付を取得、時刻を設定時刻へ変更する
-      set_start_time = @now.change(
-          hour: @setting.default_start_time.hour,
-          min: @setting.default_start_time.min
-        )
-    end
-
-    # 退勤打刻を既に打っている場合は出勤できないようにする
-    if @attendance.end_time.present?
-      flash[:alert] = "退勤打刻が打刻済みです"
-      redirect_to root_path and return
-    end
-
-    # 定時設定と現在の時刻の関係確認
-    if @now > set_start_time
-      flash[:alert] = "打刻した時間が設定した出勤時刻を過ぎています"
-      redirect_to root_path and return
-
-    elsif set_start_time - 30.minutes > @now
-      flash[:alert] = "打刻時間が早過ぎます、設定した時刻より30分未満の時点で打刻をしてください。"
-      redirect_to root_path and return
-
-    else
-      # 設定を紐づけ（activeがtrueのものを設定）
-      @attendance.setting = @setting
-
-      # 出勤日に出勤打刻があるかの確認
-      if @attendance.start_time.nil?
-        @attendance.start_time = set_start_time
-        @attendance.break_minutes = @setting.break_time
-        @attendance.save!
-
-        flash[:notice] = "出勤を打刻しました"
-      else
-        flash[:alert] = "すでに出勤打刻済みです"
-      end
+      flash[:alert] = message
     end
 
     # 打刻後にindex画面へ戻る
