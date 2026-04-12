@@ -4,7 +4,6 @@ class ChangeStartTimeandEndTimeToDatetimeInAttendances < ActiveRecord::Migration
     change_column :attendances, :end_time, :datetime
     change_column :settings, :default_start_time, :datetime
     change_column :settings, :default_end_time, :datetime
-
   end
 
   def down

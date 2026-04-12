@@ -21,7 +21,4 @@ Rails.application.routes.draw do
       post :setting_clock_out
     end
   end
-
-
-
 end

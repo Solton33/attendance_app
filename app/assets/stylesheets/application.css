@@ -89,3 +89,8 @@
 .flash-alert {
   color: red;
 }
+
+.flash-warning {
+  background-color: #fff3cd;
+  color: #856404;
+}

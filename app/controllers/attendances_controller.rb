@@ -2,16 +2,15 @@ class AttendancesController < ApplicationController
   before_action :set_attendance
   before_action :set_setting
 
-#################### 出退勤時刻の表示 ########################
+  #################### 出退勤時刻の表示 ########################
   def index
   end
 
-############################################ 手動出退勤処理 ################################################
+  ############################################ 手動出退勤処理 ################################################
 
-#################### 出勤処理 ########################
+  #################### 出勤処理 ########################
   def clock_in
-
-    message, result = @attendance.clock_in(@setting,@now)
+    message, result = @attendance.clock_in(@setting, @now)
 
     if result
       flash[:notice] = message
@@ -23,31 +22,18 @@ class AttendancesController < ApplicationController
     redirect_to root_path
   end
 
-#################### 退勤処理 ########################
+  #################### 退勤処理 ########################
   def clock_out
-    # 出勤打刻がない場合、ここで設定を紐づけ（activeがtrueのものを設定）
-    if @attendance.setting.nil?
-      @attendance.setting = @setting
+    warning, message, result = @attendance.clock_out(@setting, @now)
+
+    if warning.present?
+      flash[:warning] = warning
     end
 
-    # 今日の日付がない = 出勤がされていないので警告後に退勤のみ打刻
-    if @attendance.start_time.nil? && @attendance.end_time.nil?
-      flash[:alert] = "出勤打刻がされていません、後ほど修正してください"
-
-      @attendance.end_time = Time.current
-      @attendance.break_minutes ||= @setting.break_time
-      @attendance.save!
-      flash[:notice] = "退勤を打刻しました"
-
-    elsif @attendance.end_time.present?
-      flash[:alert] = "すでに退勤打刻済みです"
-
-      redirect_to root_path and return
-
+    if result
+      flash[:notice] = message
     else
-      @attendance.end_time = @now
-      @attendance.save!
-      flash[:notice] = "退勤を打刻しました"
+      flash[:alert] = message
     end
 
     # 打刻後にindex画面へ戻る
@@ -55,11 +41,10 @@ class AttendancesController < ApplicationController
   end
 
 
-############################################ 定時出退勤処理 ################################################
+  ############################################ 定時出退勤処理 ################################################
 
-#################### 定時出勤処理 ########################
+  #################### 定時出勤処理 ########################
   def setting_clock_in
-
     if @setting.default_start_time.nil?
       flash[:alert] = "定時出勤が設定されていません"
       redirect_to root_path and return
@@ -108,10 +93,9 @@ class AttendancesController < ApplicationController
   end
 
 
-#################### 定時退勤処理 ########################
+  #################### 定時退勤処理 ########################
 
   def setting_clock_out
-
     # 打刻時の時間を設定
     now = @now
 
@@ -156,7 +140,7 @@ class AttendancesController < ApplicationController
     redirect_to root_path
   end
 
-#################### private処理 ########################
+  #################### private処理 ########################
 
   private
 
@@ -173,5 +157,4 @@ class AttendancesController < ApplicationController
       redirect_to root_path and return
     end
   end
-
 end
