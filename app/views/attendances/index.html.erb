@@ -54,6 +54,12 @@
       </div>
     <% end %>
 
+    <% if flash[:warning] %>
+      <div class="flash-warning">
+        <%= flash[:warning] %>
+      </div>
+    <% end %>
+
     <% if flash[:alert] %>
       <div class="flash-alert">
         <%= flash[:alert] %>

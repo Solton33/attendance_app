@@ -25,29 +25,16 @@ class AttendancesController < ApplicationController
 
 #################### 退勤処理 ########################
   def clock_out
-    # 出勤打刻がない場合、ここで設定を紐づけ（activeがtrueのものを設定）
-    if @attendance.setting.nil?
-      @attendance.setting = @setting
+    warning, message, result = @attendance.clock_out(@setting,@now)
+
+    if warning.present?
+      flash[:warning] = warning
     end
 
-    # 今日の日付がない = 出勤がされていないので警告後に退勤のみ打刻
-    if @attendance.start_time.nil? && @attendance.end_time.nil?
-      flash[:alert] = "出勤打刻がされていません、後ほど修正してください"
-
-      @attendance.end_time = Time.current
-      @attendance.break_minutes ||= @setting.break_time
-      @attendance.save!
-      flash[:notice] = "退勤を打刻しました"
-
-    elsif @attendance.end_time.present?
-      flash[:alert] = "すでに退勤打刻済みです"
-
-      redirect_to root_path and return
-
+    if result
+      flash[:notice] = message
     else
-      @attendance.end_time = @now
-      @attendance.save!
-      flash[:notice] = "退勤を打刻しました"
+      flash[:alert] = message
     end
 
     # 打刻後にindex画面へ戻る
