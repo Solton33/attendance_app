@@ -10,7 +10,7 @@ module AttendanceApp
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
-    config.time_zone = 'Tokyo'
+    config.time_zone = "Tokyo"
     config.active_record.default_timezone = :local
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do

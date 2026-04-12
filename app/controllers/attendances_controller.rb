@@ -2,16 +2,15 @@ class AttendancesController < ApplicationController
   before_action :set_attendance
   before_action :set_setting
 
-#################### 出退勤時刻の表示 ########################
+  #################### 出退勤時刻の表示 ########################
   def index
   end
 
-############################################ 手動出退勤処理 ################################################
+  ############################################ 手動出退勤処理 ################################################
 
-#################### 出勤処理 ########################
+  #################### 出勤処理 ########################
   def clock_in
-
-    message, result = @attendance.clock_in(@setting,@now)
+    message, result = @attendance.clock_in(@setting, @now)
 
     if result
       flash[:notice] = message
@@ -23,9 +22,9 @@ class AttendancesController < ApplicationController
     redirect_to root_path
   end
 
-#################### 退勤処理 ########################
+  #################### 退勤処理 ########################
   def clock_out
-    warning, message, result = @attendance.clock_out(@setting,@now)
+    warning, message, result = @attendance.clock_out(@setting, @now)
 
     if warning.present?
       flash[:warning] = warning
@@ -42,11 +41,10 @@ class AttendancesController < ApplicationController
   end
 
 
-############################################ 定時出退勤処理 ################################################
+  ############################################ 定時出退勤処理 ################################################
 
-#################### 定時出勤処理 ########################
+  #################### 定時出勤処理 ########################
   def setting_clock_in
-
     if @setting.default_start_time.nil?
       flash[:alert] = "定時出勤が設定されていません"
       redirect_to root_path and return
@@ -95,10 +93,9 @@ class AttendancesController < ApplicationController
   end
 
 
-#################### 定時退勤処理 ########################
+  #################### 定時退勤処理 ########################
 
   def setting_clock_out
-
     # 打刻時の時間を設定
     now = @now
 
@@ -143,7 +140,7 @@ class AttendancesController < ApplicationController
     redirect_to root_path
   end
 
-#################### private処理 ########################
+  #################### private処理 ########################
 
   private
 
@@ -160,5 +157,4 @@ class AttendancesController < ApplicationController
       redirect_to root_path and return
     end
   end
-
 end
