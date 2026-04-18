@@ -10,7 +10,11 @@ class AttendancesController < ApplicationController
 
   #################### 出勤処理 ########################
   def clock_in
-    message, result = @attendance.clock_in(@setting, @now)
+    warning, message, result = @attendance.clock_in(@setting, @now)
+
+    if warning.present?
+      flash[:warning] = warning
+    end
 
     if result
       flash[:notice] = message
@@ -45,7 +49,11 @@ class AttendancesController < ApplicationController
 
   #################### 定時出勤処理 ########################
   def setting_clock_in
-    message, result = @attendance.setting_clock_in(@setting, @now)
+    warning, message, result = @attendance.setting_clock_in(@setting, @now)
+
+    if warning.present?
+      flash[:warning] = warning
+    end
 
     if result
       flash[:notice] = message
