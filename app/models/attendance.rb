@@ -57,7 +57,7 @@ class Attendance < ApplicationRecord
       return [ "退勤時刻は打刻済みです", false ]
     end
 
-    # setting存在チェック
+    # 定時出勤設定のチェック
     if setting.default_start_time.nil?
       return [ "定時出勤が未設定です", false ]
     end
@@ -89,5 +89,41 @@ class Attendance < ApplicationRecord
 
       [ "出勤時刻を打刻しました", true ]
     end
+  end
+
+  #################### 定時退勤処理 ########################
+  def setting_clock_out(setting, now)
+    warning = nil
+
+    # 当日の設定がされていない場合、ここで設定を紐づけ（activeがtrueのものを設定）
+    self.setting ||= setting
+
+    # 定時退勤設定のチェック
+    if setting.default_end_time.nil?
+      return [ warning, "定時退勤が未設定です", false ]
+    end
+
+    # 打刻日時から日付を取得、時刻を設定時刻へ変更する
+    set_end_time = now.change(
+      hour: setting.default_end_time.hour,
+      min: setting.default_end_time.min
+      )
+
+    # 定時前、退勤済み、出勤無しのチェック
+    if now < set_end_time
+      return [ warning, "打刻時間が定時時間より前です", false ]
+
+    elsif end_time.present?
+      return [ warning, "退勤打刻は打刻済みです", false ]
+
+    elsif start_time.nil?
+      warning = "出勤打刻がされていません、後ほど修正してください"
+      self.break_minutes = setting.break_time
+    end
+
+    self.end_time = set_end_time
+    save!
+
+    [ warning, "退勤時刻を打刻しました", true ]
   end
 end
