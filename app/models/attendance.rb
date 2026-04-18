@@ -61,7 +61,6 @@ class Attendance < ApplicationRecord
 
   #################### 定時出勤処理 ########################
   def setting_clock_in(setting, now)
-
     # 退勤済みチェック
     if end_time.present?
       return [ nil, "退勤時刻は打刻済みです", false ]
@@ -112,7 +111,7 @@ class Attendance < ApplicationRecord
     if end_time.present?
       return [ warning, "退勤打刻は打刻済みです", false ]
     end
-    
+
     # 当日の設定がされていない場合、ここで設定を紐づけ（activeがtrueのものを設定）
     self.setting ||= setting
     current_setting = self.setting
