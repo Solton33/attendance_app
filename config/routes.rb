@@ -21,5 +21,5 @@ Rails.application.routes.draw do
     end
   end
 
-  resource :setting, only:[:show]
+  resource :setting, only: [ :show ]
 end
