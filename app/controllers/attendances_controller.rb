@@ -3,6 +3,10 @@ class AttendancesController < ApplicationController
   before_action :set_setting
 
   #################### 出退勤時刻の表示 ########################
+  def home
+  end
+
+  #################### 勤怠一覧の表示 ########################
   def index
   end
 
@@ -99,8 +103,10 @@ class AttendancesController < ApplicationController
     @setting = Setting.find_by(active: true)
 
     if @setting.nil?
-      flash[:alert] = "有効な設定がありません"
-      redirect_to root_path and return
+      @setting = Setting.create!(
+        break_time: 0,
+        active: true
+      )
     end
   end
 end

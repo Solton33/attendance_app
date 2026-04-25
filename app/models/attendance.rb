@@ -38,6 +38,10 @@ class Attendance < ApplicationRecord
       return [ warning, "退勤時刻は打刻済みです", false ]
     end
 
+    if start_time.present? && now < start_time
+      return [ warning, "退勤時刻が出勤時刻より前です", false ]
+    end
+
     # setting紐付け
     self.setting ||= setting
     current_setting = self.setting
