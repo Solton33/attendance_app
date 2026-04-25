@@ -1,5 +1,48 @@
-<h1>設定画面</h1>
+<body class="<%= controller_name %>">
+  <div class="container">
+    <h1 class = "setting_titel">定時時間設定</h1>
 
-<p>定時出勤：<%= @setting&.default_start_time %></p>
-<p>定時退勤：<%= @setting&.default_end_time %></p>
-<p>休憩時間：<%= @setting&.break_time %></p>
+    <%= form_with model: @setting, url: setting_path, method: :patch do |f| %>
+
+      <div class="setting_time">
+        <label>定時出勤</label>
+        <%= f.time_field :default_start_time %>
+      </div>
+
+      <div class="setting_time">
+        <label>定時退勤</label>
+        <%= f.time_field :default_end_time %>
+      </div>
+
+      <div class = "setting_break_time">
+        <div class="setting_time">
+          <label>休憩時間（分）</label>
+          <%= f.number_field :break_time, min: 0 %>
+        </div>
+      </div>
+
+      
+      <div class="setting_time">
+        <%= f.submit "保存" %>
+      </div>
+
+      <div style="height: 30px;">
+        <div class="flash-area">
+          <% if flash[:notice] %>
+            <div class="flash-notice">
+              <p><%= flash[:notice] %></p>
+            </div>
+          <% end %>
+
+          <% if flash[:alert] %>
+            <div class="flash-notice">
+              <p><%= flash[:alert] %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+    <% end %>
+  </div>
+</body>
+
