@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "attendances#home"
+  get "attendances/home"
 
   resources :attendances do
     collection do

@@ -1,1 +1,62 @@
-<h1>表示テスト</h1>
+<body class="<%= controller_name %> <%= action_name %>">
+
+  <div class="container_list">
+
+    <!-- 当月 -->
+    
+      <div class="top_list">
+        <%= link_to "← 前月", attendances_path(year: @prev_month.year, month: @prev_month.month) %>
+          <div class="year_month">
+            <%= @current_date.strftime("%Y 年 %m 月 ") %>
+          </div>
+        <%= link_to "次月 →", attendances_path(year: @next_month.year, month: @next_month.month) %>
+      </div>
+
+    <!-- 一覧表 -->
+    <table>
+      <!-- 項目 -->
+      <thead>
+        <tr>
+          <th>日付</th>
+          <th>出勤</th>
+          <th>退勤</th>
+          <th>休憩(分)</th>
+          <th>勤務時間</th>
+        </tr>
+      </thead>
+        <!-- 一覧 -->
+        <tbody>
+        <% @dates.each do |date| %>
+          <% work_list = @attendances.find { |list| list.work_date == date } %>
+            <tr>
+              <td><%= date.strftime("%m / %d (#{%w(日 月 火 水 木 金 土)[date.wday]})") %></td>
+              <% if work_list %>
+                <td><%= work_list.start_time&.strftime("%H:%M") %></td>
+                <td><%= work_list.end_time&.strftime("%H:%M") %></td>
+                <td><%= work_list.break_minutes %></td>
+                <td><%= work_list.work_minutes %></td>
+              <% else %>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              <% end %>
+            </tr> 
+        <% end %>
+      </tbody>
+    </table>
+  
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
