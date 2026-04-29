@@ -20,7 +20,6 @@ class AttendancesController < ApplicationController
     # 表示月の前後の月を取得
     @prev_month = @current_date.prev_month
     @next_month = @current_date.next_month
-
   end
 
   ############################################ 手動出退勤処理 ################################################
