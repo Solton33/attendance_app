@@ -8,6 +8,19 @@ class AttendancesController < ApplicationController
 
   #################### 勤怠一覧の表示 ########################
   def index
+    # 表示月をパラメータで取得
+    year = params[:year]&.to_i || Date.today.year
+    month = params[:month]&.to_i || Date.today.month
+
+    # 表示月の１ヶ月分を取得
+    @current_date = Date.new(year, month, 1)
+    @dates = (@current_date.beginning_of_month..@current_date.end_of_month).to_a
+    @attendances = Attendance.where(work_date: @dates)
+
+    # 表示月の前後の月を取得
+    @prev_month = @current_date.prev_month
+    @next_month = @current_date.next_month
+
   end
 
   ############################################ 手動出退勤処理 ################################################

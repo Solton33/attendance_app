@@ -9,8 +9,7 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
- .attendances, .settings {
-  margin: 0;
+.attendances.home, .settings {
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -19,13 +18,25 @@
   font-family: sans-serif;
 }
 
-
-
 .container {
   width: 400px;
   text-align: center;
 }
 
+.attendances.index {
+  display: block;        /* flexやめる */
+  height: auto;          /* 高さ固定やめる */
+  background-color: #f4f6f9;
+  padding-top: 30px;     /* 上に余白 */
+}
+
+.attendances.index .container_list {
+  width: 600px;
+  margin: 0 auto;        /* 横中央 */
+  padding: 20px;
+  margin-bottom: 60px;   /* ←これが下の余白（重要） */
+  text-align: center;
+}
 
 .date {
   font-size: 18px;
@@ -101,6 +112,43 @@
   width: 97px;
   height: 30px;
   text-align: left;
+}
+
+.top_list{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+
+.year_month{
+  font-size: 25px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: center;
+}
+
+
+th {
+  background-color: #f0f0f0;
+}
+
+th:nth-child(1), td:nth-child(1){
+  width: 150px;
+}
+
+th:nth-child(4), td:nth-child(4){
+  width: 80px;
 }
 
 
