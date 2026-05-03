@@ -55,6 +55,14 @@ class Attendance < ApplicationRecord
     # 通常退勤
     self.end_time = now
 
+    # 休憩時間セット
+    self.break_minutes ||= current_setting.break_time
+
+    # 勤務時間計算
+    if start_time && end_time && break_minutes
+      self.work_minutes = calc_work_minutes
+    end
+
     if save
       [ warning, "退勤打刻を打刻しました", true ]
     else
@@ -142,10 +150,29 @@ class Attendance < ApplicationRecord
 
     self.end_time = set_end_time
 
+    # 休憩時間セット
+    self.break_minutes ||= current_setting.break_time
+
+    # 勤務時間計算
+    if start_time && end_time && break_minutes
+      self.work_minutes = calc_work_minutes
+    end
+
     if save
       [ warning, "退勤時刻を打刻しました", true ]
     else
       [ warning, "退勤打刻に失敗しました", false ]
     end
+  end
+
+  #################### 勤務時間計算処理 ########################
+  def calc_work_minutes
+    # 出勤、退勤が揃っていない場合計算しない
+    if !(start_time && end_time)
+      return
+    end
+
+    # 勤務時間計算(分単位)
+    ((end_time - start_time)/60).to_i - break_minutes.to_i
   end
 end
