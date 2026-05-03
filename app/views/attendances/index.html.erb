@@ -6,10 +6,12 @@
     
       <div class="top_list">
         <%= link_to "← 前月", attendances_path(year: @prev_month.year, month: @prev_month.month) %>
-          <div class="year_month">
-            <%= @current_date.strftime("%Y 年 %m 月 ") %>
-          </div>
+        <%= link_to "当月", attendances_path %>
         <%= link_to "次月 →", attendances_path(year: @next_month.year, month: @next_month.month) %>
+      </div>
+
+      <div class="year_month">
+        <%= @current_date.strftime("%Y 年 %m 月 ") %>
       </div>
 
     <!-- 一覧表 -->
@@ -28,13 +30,17 @@
         <tbody>
         <% @dates.each do |date| %>
           <% work_list = @attendances.find { |list| list.work_date == date } %>
-            <tr>
+            <tr class="<%= 'today-row' if date == Date.today %>">
               <td><%= date.strftime("%m / %d (#{%w(日 月 火 水 木 金 土)[date.wday]})") %></td>
               <% if work_list %>
                 <td><%= work_list.start_time&.strftime("%H:%M") %></td>
                 <td><%= work_list.end_time&.strftime("%H:%M") %></td>
                 <td><%= work_list.break_minutes %></td>
-                <td><%= work_list.work_minutes %></td>
+                <% if work_list.start_time.blank? || work_list.end_time.blank? %>
+                  <td>-</td>
+                <% else %>
+                  <td><%= format_minutes(work_list.work_minutes) %></td>
+                <% end %>
               <% else %>
                 <td></td>
                 <td></td>

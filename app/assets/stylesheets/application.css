@@ -119,11 +119,13 @@
   justify-content: space-between;
   align-items: center;
   font-weight: bold;
+  padding-bottom:10px;
 }
 
 
 .year_month{
   font-size: 25px;
+  font-weight: bold;
 }
 
 table {
@@ -136,6 +138,7 @@ th, td {
   border: 1px solid #ccc;
   padding: 6px;
   text-align: center;
+  width: 100px;
 }
 
 
@@ -147,9 +150,10 @@ th:nth-child(1), td:nth-child(1){
   width: 150px;
 }
 
-th:nth-child(4), td:nth-child(4){
-  width: 80px;
+.today-row {
+  background-color: #fff3cd;
 }
+
 
 
 .flash-area {
