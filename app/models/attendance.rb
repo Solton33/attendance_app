@@ -5,11 +5,11 @@ class Attendance < ApplicationRecord
   validates :work_date, uniqueness: true
   validate :end_time_after_start_time
   validates :break_minutes, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
-  validates :work_minutes,numericality: { greater_than_or_equal_to: 0 },allow_nil: true
+  validates :work_minutes, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   def end_time_after_start_time
     if start_time.blank? || end_time.blank?
-      return 
+      return
     end
 
     if end_time < start_time
@@ -204,7 +204,7 @@ class Attendance < ApplicationRecord
   def self.expected_work_minutes(dates, setting)
     # 定時出勤/退勤が設定されていない場合は計算しない
     if setting&.default_start_time.blank? || setting&.default_end_time.blank?
-      return 
+      return
     end
 
     # 土日以外の日数を算出
@@ -220,5 +220,4 @@ class Attendance < ApplicationRecord
     # 日数と定時の勤務時間で合計算出
     work_days * daily_minutes
   end
-
 end
