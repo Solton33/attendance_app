@@ -1,6 +1,22 @@
 class Attendance < ApplicationRecord
   belongs_to :setting
 
+  validates :work_date, presence: true
+  validates :work_date, uniqueness: true
+  validate :end_time_after_start_time
+  validates :break_minutes, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :work_minutes,numericality: { greater_than_or_equal_to: 0 },allow_nil: true
+
+  def end_time_after_start_time
+    if start_time.blank? || end_time.blank?
+      return 
+    end
+
+    if end_time < start_time
+      errors.add(:end_time, "は出勤時間より後にしてください")
+    end
+  end
+
   #################### 出勤処理 ########################
   def clock_in(setting, now)
     # 退勤打刻を既に打っている場合は出勤できないようにする
@@ -166,6 +182,7 @@ class Attendance < ApplicationRecord
   end
 
   #################### 勤務時間計算処理 ########################
+  # 出退勤後の勤務時間計算
   def calc_work_minutes
     # 出勤、退勤が揃っていない場合計算しない
     if !(start_time && end_time)
@@ -175,4 +192,33 @@ class Attendance < ApplicationRecord
     # 勤務時間計算(分単位)
     ((end_time - start_time)/60).to_i - break_minutes.to_i
   end
+
+  # 月の勤務時間合計
+  def self.total_work_minutes(attendances)
+    attendances
+    .select { |a| a.start_time.present? && a.end_time.present? }
+    .sum { |a| a.work_minutes.to_i }
+  end
+
+  # 月の予想総勤務時間合計
+  def self.expected_work_minutes(dates, setting)
+    # 定時出勤/退勤が設定されていない場合は計算しない
+    if setting&.default_start_time.blank? || setting&.default_end_time.blank?
+      return 
+    end
+
+    # 土日以外の日数を算出
+    work_days = dates.count { |date| date.wday != 0 && date.wday != 6 }
+
+    # 定時の勤務時間を算出
+    daily_minutes = ((setting.default_end_time - setting.default_start_time) / 60).to_i - setting.break_time.to_i
+
+    if daily_minutes < 0
+      return 0
+    end
+
+    # 日数と定時の勤務時間で合計算出
+    work_days * daily_minutes
+  end
+
 end

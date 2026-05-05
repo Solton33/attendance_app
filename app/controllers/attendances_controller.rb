@@ -20,6 +20,12 @@ class AttendancesController < ApplicationController
     # 表示月の前後の月を取得
     @prev_month = @current_date.prev_month
     @next_month = @current_date.next_month
+
+    # 月の総労働時間の取得
+    @total_work_minutes = Attendance.total_work_minutes(@attendances)
+
+    # 月の予想総労働時間の取得
+    @expected_work_minutes = Attendance.expected_work_minutes(@dates, @setting)
   end
 
   ############################################ 手動出退勤処理 ################################################

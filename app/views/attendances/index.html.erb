@@ -30,17 +30,13 @@
         <tbody>
         <% @dates.each do |date| %>
           <% work_list = @attendances.find { |list| list.work_date == date } %>
-            <tr class="<%= 'today-row' if date == Date.today %>">
+            <tr class="<%= row_class(date) %>">
               <td><%= date.strftime("%m / %d (#{%w(日 月 火 水 木 金 土)[date.wday]})") %></td>
               <% if work_list %>
                 <td><%= work_list.start_time&.strftime("%H:%M") %></td>
                 <td><%= work_list.end_time&.strftime("%H:%M") %></td>
                 <td><%= work_list.break_minutes %></td>
-                <% if work_list.start_time.blank? || work_list.end_time.blank? %>
-                  <td>-</td>
-                <% else %>
-                  <td><%= format_minutes(work_list.work_minutes) %></td>
-                <% end %>
+                <td><%= work_minutes_display(work_list) %></td>
               <% else %>
                 <td></td>
                 <td></td>
@@ -50,7 +46,23 @@
             </tr> 
         <% end %>
       </tbody>
+
+      <!-- 総労働時間一覧 -->
+      <tfoot>
+        <tr>
+          <td colspan="2">総勤務時間</td>
+          <td colspan="4"><%= format_minutes(@total_work_minutes) %></td>
+        </tr>
+
+        <tr>
+          <td colspan="2">月の予想総勤務時間</td>
+          <td colspan="4"><%= @expected_work_minutes ? format_minutes(@expected_work_minutes) : "-" %></td>
+        </tr>
+      </tfoot>
     </table>
+
+    
+
   
   </div>
 
