@@ -154,7 +154,18 @@ th:nth-child(1), td:nth-child(1){
   background-color: #fff3cd;
 }
 
+.sunday:not(.today-row){
+  background-color: #efb0b0;
+}
 
+.saturday:not(.today-row){
+  background-color: #bdd3ef;
+}
+
+tfoot td {
+  font-weight: bold;
+  background-color: #f4efde;
+}
 
 .flash-area {
   margin-top: 10px;
@@ -172,4 +183,5 @@ th:nth-child(1), td:nth-child(1){
 .flash-warning {
   background-color: #fff3cd;
   color: #856404;
+  
 }
