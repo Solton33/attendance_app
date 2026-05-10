@@ -1,24 +1,34 @@
-# README
+# 勤怠管理アプリ
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 概要
+Ruby on Railsで作成中の勤怠管理アプリ。
 
-Things you may want to cover:
+## 目的
+- Rails基礎理解
+- CRUD理解
+- 勤怠ロジック実装
+- Git/GitHub運用練習
 
-* Ruby version
+## 主な機能
+- 出勤打刻
+- 退勤打刻
+- 勤怠一覧表示
+- 勤務時間計算
+- 設定テーブルによる勤怠制御
 
-* System dependencies
+## 使用技術
+- Ruby
+- Ruby on Rails
+- SQLite3
+- GitHub
 
-* Configuration
+## 現在取り組み中
+- バリデーション強化
+- 勤怠ロジック改善
+- UI改善
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## 今後実装予定
+- ログイン機能
+- CSV出力機能
+- アカウントごとの管理権限設定機能
+- 休日設定機能
