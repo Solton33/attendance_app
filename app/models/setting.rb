@@ -6,7 +6,7 @@ class Setting < ApplicationRecord
 
   def end_after_start
     if default_start_time.blank? || default_end_time.blank?
-      retrun
+      return
     end
 
     if default_end_time <= default_start_time
