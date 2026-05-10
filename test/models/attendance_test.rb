@@ -39,8 +39,8 @@ class AttendanceTest < ActiveSupport::TestCase
     assert_equal "出勤時刻を打刻しました", message
     assert_equal true, result
   end
-  
-  
+
+
   ################## 異常テスト ##################
   # バリデーションテスト
   test "打刻時間が出勤 > 退勤時のバリデーション" do
