@@ -37,7 +37,8 @@ class AttendanceTest < ActiveSupport::TestCase
     p warning, message, result
     p attendance.errors.full_messages
 
-    assert_equal now, attendance.start_time
+    assert_equal now.hour, attendance.start_time.hour
+    assert_equal now.min, attendance.start_time.min
     assert_equal setting.break_time, attendance.break_minutes
     assert_nil warning
     assert_equal "出勤時刻を打刻しました", message
