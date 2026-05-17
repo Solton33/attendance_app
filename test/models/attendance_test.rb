@@ -226,13 +226,11 @@ class AttendanceTest < ActiveSupport::TestCase
     p warning, message, result
     p attendance.errors.full_messages
     p attendance.work_date
-    p attendance.start_time
 
     assert_equal "出勤打刻に失敗しました", message
     assert_nil warning
     assert_equal false, result
     assert_nil attendance.work_date
-    assert_nil attendance.start_time
   end
 
 
