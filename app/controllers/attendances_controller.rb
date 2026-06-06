@@ -9,8 +9,8 @@ class AttendancesController < ApplicationController
   #################### 勤怠一覧の表示 ########################
   def index
     # 表示月をパラメータで取得
-    year = params[:year]&.to_i || Date.today.year
-    month = params[:month]&.to_i || Date.today.month
+    year = params[:year]&.to_i || Date.current.year
+    month = params[:month]&.to_i || Date.current.month
 
     # 表示月の１ヶ月分を取得
     @current_date = Date.new(year, month, 1)
@@ -34,15 +34,7 @@ class AttendancesController < ApplicationController
   def clock_in
     warning, message, result = @attendance.clock_in(@setting, @now)
 
-    if warning.present?
-      flash[:warning] = warning
-    end
-
-    if result
-      flash[:notice] = message
-    else
-      flash[:alert] = message
-    end
+    set_flash_message(warning, message, result)
 
     # 打刻後にindex画面へ戻る
     redirect_to root_path
@@ -52,15 +44,7 @@ class AttendancesController < ApplicationController
   def clock_out
     warning, message, result = @attendance.clock_out(@setting, @now)
 
-    if warning.present?
-      flash[:warning] = warning
-    end
-
-    if result
-      flash[:notice] = message
-    else
-      flash[:alert] = message
-    end
+    set_flash_message(warning, message, result)
 
     # 打刻後にindex画面へ戻る
     redirect_to root_path
@@ -73,15 +57,7 @@ class AttendancesController < ApplicationController
   def setting_clock_in
     warning, message, result = @attendance.setting_clock_in(@setting, @now)
 
-    if warning.present?
-      flash[:warning] = warning
-    end
-
-    if result
-      flash[:notice] = message
-    else
-      flash[:alert] = message
-    end
+    set_flash_message(warning, message, result)
 
     # 打刻後にindex画面へ戻る
     redirect_to root_path
@@ -93,16 +69,7 @@ class AttendancesController < ApplicationController
   def setting_clock_out
     warning, message, result = @attendance.setting_clock_out(@setting, @now)
 
-    if warning.present?
-      flash[:warning] = warning
-    end
-
-
-    if result
-      flash[:notice] = message
-    else
-      flash[:alert] = message
-    end
+    set_flash_message(warning, message, result)
 
     # 打刻後にindex画面へ戻る
     redirect_to root_path
@@ -113,7 +80,7 @@ class AttendancesController < ApplicationController
   private
 
   def set_attendance
-    @attendance = Attendance.find_or_initialize_by(work_date: Date.today)
+    @attendance = Attendance.find_or_initialize_by(work_date: Date.current)
     @now = Time.current
   end
 
@@ -125,6 +92,18 @@ class AttendancesController < ApplicationController
         break_time: 0,
         active: true
       )
+    end
+  end
+
+  def set_flash_message(warning, message, result)
+    if warning.present?
+      flash[:warning] = warning
+    end
+
+    if result
+      flash[:notice] = message
+    else
+      flash[:alert] = message
     end
   end
 end
