@@ -30,7 +30,7 @@ class AttendancesControllerTest < ActionDispatch::IntegrationTest
     p response.redirect_url
     p flash[:notice]
     p attendance.attributes
-    
+
     assert_redirected_to root_path
     assert_not_nil attendance.start_time
     assert_equal "出勤時刻を打刻しました", flash[:notice]
@@ -97,7 +97,6 @@ class AttendancesControllerTest < ActionDispatch::IntegrationTest
       active: true,
       default_start_time: Time.current.change(hour: 8, min: 30),
       default_end_time: Time.current.change(hour: 17, min: 30),
-      break_time: 60}.merge(param))
+      break_time: 60 }.merge(param))
   end
-
 end
