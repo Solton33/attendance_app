@@ -663,6 +663,6 @@ class AttendanceTest < ActiveSupport::TestCase
       default_start_time: Time.current.change(hour: 8, min: 30),
       default_end_time: Time.current.change(hour: 17, min: 30),
       break_time: 60
-    }.merge(params)) 
+    }.merge(params))
   end
 end
