@@ -6,9 +6,12 @@ class AttendanceTest < ActiveSupport::TestCase
   ######### calc_work_minutes #########
   # 勤務時間計算テスト
   test "勤務時間計算" do
-    attendance = @attendance
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 30),
+      end_time: Time.current.change(hour: 17, min: 30),
+      break_minutes: 60
+    )
 
-    attendance.break_minutes = 60
     result = attendance.calc_work_minutes
 
     p attendance
@@ -20,14 +23,8 @@ class AttendanceTest < ActiveSupport::TestCase
   ######### clock_in #########
   # 出勤打刻テスト
   test "出勤打刻(clock_in)" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: nil,
-      end_time: nil
-    )
-
-    setting = @setting
-
+    attendance = build_attendance
+    setting = build_setting
     now = Time.current
 
     warning, message, result = attendance.clock_in(setting, now)
@@ -49,12 +46,11 @@ class AttendanceTest < ActiveSupport::TestCase
   ######### clock_out #########
   # 退勤打刻テスト
   test "退勤打刻(clock_out)" do
-    attendance = @attendance
-    attendance.work_date = Date.current
-    attendance.end_time = nil
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 30)
+    )
 
-    setting = @setting
-
+    setting = build_setting
     now = Time.current.change(hour: 17, min: 30)
 
     warning, message, result = attendance.clock_out(setting, now)
@@ -75,17 +71,8 @@ class AttendanceTest < ActiveSupport::TestCase
   ######### setting_clock_in #########
   # 定時出勤打刻テスト
   test "定時出勤打刻(setting_clock_in)" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: nil,
-      end_time: nil
-    )
-
-    setting = Setting.new(
-      default_start_time: Time.current.change(hour: 9, min: 0),
-      break_time: 60
-    )
-
+    attendance = build_attendance
+    setting = build_setting
     now = Time.current.change(hour: 8, min: 30)
 
     warning, message, result = attendance.setting_clock_in(setting, now)
@@ -104,50 +91,11 @@ class AttendanceTest < ActiveSupport::TestCase
     assert_equal setting.default_start_time.min, attendance.start_time.min
   end
 
-  # 境界値テスト(定時出勤打刻_定時時間出勤の境界)
-  test "定時出勤打刻(setting_clock_in)_境界値定時" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: nil,
-      end_time: nil
-    )
-
-    setting = Setting.new(
-      default_start_time: Time.current.change(hour: 9, min: 0),
-      break_time: 60
-    )
-
-    now = Time.current.change(hour: 9, min: 0)
-
-    warning, message, result = attendance.setting_clock_in(setting, now)
-
-    p attendance
-    p now
-    p warning, message, result
-    p attendance.errors.full_messages
-    p attendance.start_time
-
-    assert_equal "出勤時刻を打刻しました", message
-    assert_nil warning
-    assert_equal true, result
-    assert_equal setting.default_start_time.hour, attendance.start_time.hour
-    assert_equal setting.default_start_time.min, attendance.start_time.min
-  end
-
   # 境界値テスト(定時出勤打刻_30分前出勤の境界)
   test "定時出勤打刻(setting_clock_in)_境界値30分前" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: nil,
-      end_time: nil
-    )
-
-    setting = Setting.new(
-      default_start_time: Time.current.change(hour: 9, min: 0),
-      break_time: 60
-    )
-
-    now = Time.current.change(hour: 8, min: 30)
+    attendance = build_attendance
+    setting = build_setting
+    now = Time.current.change(hour: 8, min: 00)
 
     warning, message, result = attendance.setting_clock_in(setting, now)
 
@@ -168,53 +116,10 @@ class AttendanceTest < ActiveSupport::TestCase
   ######### setting_clock_out #########
   # 定時退勤打刻テスト
   test "定時退勤打刻(setting_clock_out)" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: Time.current.change(hour: 8, min: 30),
-      end_time: nil,
-      break_minutes: nil
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 30)
     )
-
-    setting = Setting.new(
-      default_start_time: nil,
-      default_end_time: Time.current.change(hour: 17, min: 30),
-      break_time: 60
-    )
-
-    now = Time.current.change(hour: 17, min: 31)
-
-    warning, message, result = attendance.setting_clock_out(setting, now)
-
-    p attendance
-    p now
-    p warning, message, result
-    p attendance.errors.full_messages
-    p attendance.end_time
-    p attendance.work_minutes
-
-    assert_equal "退勤時刻を打刻しました", message
-    assert_nil warning
-    assert_equal true, result
-    assert_equal setting.default_end_time.hour, attendance.end_time.hour
-    assert_equal setting.default_end_time.min, attendance.end_time.min
-    assert_equal 480, attendance.work_minutes
-  end
-
-  # 境界値テスト(定時退勤打刻_定時時間退勤の境界)
-  test "定時退勤打刻(setting_clock_out)_定時退勤境界" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: Time.current.change(hour: 8, min: 30),
-      end_time: nil,
-      break_minutes: nil
-    )
-
-    setting = Setting.new(
-      default_start_time: nil,
-      default_end_time: Time.current.change(hour: 17, min: 30),
-      break_time: 60
-    )
-
+    setting = build_setting
     now = Time.current.change(hour: 17, min: 30)
 
     warning, message, result = attendance.setting_clock_out(setting, now)
@@ -236,19 +141,10 @@ class AttendanceTest < ActiveSupport::TestCase
 
   # 境界値テスト(定時退勤打刻_30分後退勤の境界)
   test "定時退勤打刻(setting_clock_out)_30分後退勤境界" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: Time.current.change(hour: 8, min: 30),
-      end_time: nil,
-      break_minutes: nil
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 30)
     )
-
-    setting = Setting.new(
-      default_start_time: nil,
-      default_end_time: Time.current.change(hour: 17, min: 30),
-      break_time: 60
-    )
-
+    setting =  build_setting
     now = Time.current.change(hour: 18, min: 00)
 
     warning, message, result = attendance.setting_clock_out(setting, now)
@@ -274,13 +170,8 @@ class AttendanceTest < ActiveSupport::TestCase
   ######### clock_out(出勤なし) #########
   # 退勤打刻テスト(出勤打刻なし)
   test "退勤打刻(clock_out)_出勤打刻なし" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: nil,
-      end_time: nil
-    )
-
-    setting = @setting
+    attendance = build_attendance
+    setting = build_setting
     now = Time.current.change(hour: 17, min: 30)
 
     warning, message, result = attendance.clock_out(setting, now)
@@ -305,19 +196,8 @@ class AttendanceTest < ActiveSupport::TestCase
   ######### setting_clock_out(出勤なし) #########
   # 退勤打刻テスト(出勤打刻なし)
   test "退勤打刻(setting_clock_out)_出勤打刻なし" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: nil,
-      end_time: nil,
-      break_minutes: nil
-    )
-
-    setting = Setting.new(
-      default_start_time: Time.current.change(hour: 8, min: 30),
-      default_end_time: Time.current.change(hour: 17, min: 30),
-      break_time: 60
-    )
-
+    attendance = build_attendance
+    setting = build_setting
     now = Time.current.change(hour: 17, min: 30)
 
     warning, message, result = attendance.setting_clock_out(setting, now)
@@ -344,14 +224,12 @@ class AttendanceTest < ActiveSupport::TestCase
   ######### clock_in #########
   # 出勤打刻テスト(出勤済み)
   test "出勤打刻(clock_in)_出勤済み" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: Time.current.change(hour: 8, min: 30),
-      end_time: nil
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 30)
     )
 
-    setting = @setting
-    now = Time.current
+    setting = build_setting
+    now = Time.current.change(hour: 8, min: 40)
 
     warning, message, result = attendance.clock_in(setting, now)
 
@@ -367,9 +245,12 @@ class AttendanceTest < ActiveSupport::TestCase
 
   # 出勤打刻テスト(退勤済み)
   test "出勤打刻(clock_in)_退勤済み" do
-    attendance = @attendance
-    setting = @setting
-    now = Time.current
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 30),
+      end_time: Time.current.change(hour: 17, min: 30)
+    )
+    setting = build_setting
+    now = Time.current.change(hour: 17, min: 40)
 
     warning, message, result = attendance.clock_in(setting, now)
 
@@ -385,13 +266,11 @@ class AttendanceTest < ActiveSupport::TestCase
 
   # save失敗テスト(clock_in)
   test "save失敗(clock_in)" do
-    attendance = Attendance.new(
-      work_date: nil,
-      start_time: nil,
-      end_time: nil
+    attendance = build_attendance(
+      work_date: nil
     )
 
-    setting = @setting
+    setting = build_setting
     now = Time.current
 
     warning, message, result = attendance.clock_in(setting, now)
@@ -413,11 +292,12 @@ class AttendanceTest < ActiveSupport::TestCase
   ######### clock_out #########
   # 退勤打刻テスト(退勤打刻済み)
   test "退勤打刻(clock_out)_退勤済み" do
-    attendance = @attendance
-    attendance.work_date = Date.current
+    attendance = build_attendance(
+      end_time: Time.current.change(hour: 17, min: 30)
+    )
 
-    setting = @setting
-    now = Time.current
+    setting = build_setting
+    now = Time.current.change(hour: 17, min: 40)
 
     warning, message, result = attendance.clock_out(setting, now)
 
@@ -435,13 +315,11 @@ class AttendanceTest < ActiveSupport::TestCase
 
   # 退勤打刻テスト(退勤時刻 < 出勤時刻)
   test "退勤打刻(clock_out)_退勤時刻 < 出勤時刻" do
-    attendance = Attendance.new(
-    work_date: Date.current,
-    start_time: Time.current.change(hour: 18, min: 00),
-    end_time: nil
-  )
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 18, min: 00)
+    )
 
-    setting = @setting
+    setting = build_setting
     now = Time.current.change(hour: 17, min: 30)
 
     warning, message, result = attendance.clock_out(setting, now)
@@ -461,13 +339,12 @@ class AttendanceTest < ActiveSupport::TestCase
 
   # save失敗テスト(clock_out)
   test "save失敗(clock_out)" do
-    attendance = Attendance.new(
+    attendance = build_attendance(
       work_date: nil,
-      start_time: Time.current.change(hour: 8, min: 30),
-      end_time: nil
+      start_time: Time.current.change(hour: 8, min: 30)
     )
 
-    setting = @setting
+    setting = build_setting
     now = Time.current.change(hour: 17, min: 30)
 
     warning, message, result = attendance.clock_out(setting, now)
@@ -487,13 +364,11 @@ class AttendanceTest < ActiveSupport::TestCase
   ######### setting_clock_in #########
   # 定時出勤打刻テスト(退勤打刻済み)
   test "定時出勤打刻(setting_clock_in)_退勤打刻済み" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: nil,
+    attendance = build_attendance(
       end_time: Time.current.change(hour: 17, min: 30)
     )
 
-    setting = @setting
+    setting = build_setting
     now = Time.current.change(hour: 8, min: 30)
 
     warning, message, result = attendance.setting_clock_in(setting, now)
@@ -511,12 +386,7 @@ class AttendanceTest < ActiveSupport::TestCase
 
   # 定時出勤打刻テスト(定時出勤設定なし)
   test "定時出勤打刻(setting_clock_in)_定時出勤設定なし" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: nil,
-      end_time: nil,
-      break_minutes: nil
-    )
+    attendance = build_attendance
 
     setting = Setting.new(
       default_start_time: nil,
@@ -540,16 +410,9 @@ class AttendanceTest < ActiveSupport::TestCase
 
   # 定時出勤打刻テスト(打刻時間 > 定時出勤時間)
   test "定時出勤打刻(setting_clock_in)_打刻時間 > 定時出勤時間" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: nil,
-      end_time: nil,
-      break_minutes: nil
-    )
-
-    setting = Setting.new(
-      default_start_time: Time.current.change(hour: 9, min: 0),
-      break_time: 60
+    attendance = build_attendance
+    setting = build_setting(
+      default_start_time: Time.current.change(hour: 9, min: 0)
     )
 
     now = Time.current.change(hour: 9, min: 1)
@@ -570,18 +433,9 @@ class AttendanceTest < ActiveSupport::TestCase
 
   # 境界値テスト(定時出勤打刻_30分前出勤の境界)
   test "定時出勤打刻(setting_clock_in)_境界値31分前" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: nil,
-      end_time: nil
-    )
-
-    setting = Setting.new(
-      default_start_time: Time.current.change(hour: 9, min: 0),
-      break_time: 60
-    )
-
-    now = Time.current.change(hour: 8, min: 29)
+    attendance = build_attendance
+    setting = build_setting
+    now = Time.current.change(hour: 7, min: 59)
 
     warning, message, result = attendance.setting_clock_in(setting, now)
 
@@ -598,19 +452,12 @@ class AttendanceTest < ActiveSupport::TestCase
 
   # 定時出勤打刻テスト(定時出勤打刻済み)
   test "定時出勤打刻(setting_clock_in)_出勤打刻済み" do
-    attendance = Attendance.new(
-    work_date: Date.current,
-    start_time: Time.current.change(hour: 8, min: 30),
-    end_time: nil,
-    break_minutes: nil
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 00)
     )
 
-    setting = Setting.new(
-      default_start_time: Time.current.change(hour: 9, min: 0),
-      break_time: 60
-    )
-
-    now = Time.current.change(hour: 8, min: 45)
+    setting = build_setting
+    now = Time.current.change(hour: 8, min: 15)
 
     warning, message, result = attendance.setting_clock_in(setting, now)
 
@@ -623,23 +470,17 @@ class AttendanceTest < ActiveSupport::TestCase
     assert_nil warning
     assert_equal false, result
     assert_equal 8, attendance.start_time.hour
-    assert_equal 30, attendance.start_time.min
+    assert_equal 0, attendance.start_time.min
   end
 
   # save失敗テスト(setting_clock_in)
   test "save失敗(setting_clock_in)" do
-    attendance = Attendance.new(
-      work_date: nil,
-      start_time: nil,
-      end_time: nil
+    attendance = build_attendance(
+      work_date: nil
     )
 
-    setting = Setting.new(
-      default_start_time: Time.current.change(hour: 9, min: 0),
-      break_time: 60
-    )
-
-    now = Time.current.change(hour: 9, min: 00)
+    setting = build_setting
+    now = Time.current.change(hour: 8, min: 30)
 
     warning, message, result = attendance.setting_clock_in(setting, now)
 
@@ -658,19 +499,12 @@ class AttendanceTest < ActiveSupport::TestCase
   ######### setting_clock_out #########
   # 退勤打刻テスト(退勤済み)
   test "定時退勤打刻(setting_clock_out)_退勤済み" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: Time.current.change(hour: 7, min: 30),
-      end_time: Time.current.change(hour: 17, min: 00),
-      break_minutes: 60
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 30),
+      end_time: Time.current.change(hour: 17, min: 30)
     )
 
-    setting = Setting.new(
-      default_start_time: nil,
-      default_end_time: Time.current.change(hour: 17, min: 30),
-      break_time: 60
-    )
-
+    setting = build_setting
     now = Time.current.change(hour: 17, min: 31)
 
     warning, message, result = attendance.setting_clock_out(setting, now)
@@ -686,24 +520,19 @@ class AttendanceTest < ActiveSupport::TestCase
     assert_equal "退勤打刻は打刻済みです", message
     assert_nil warning
     assert_equal false, result
-    assert_equal attendance.end_time.hour, Time.current.change(hour: 17, min: 00).hour
-    assert_equal attendance.end_time.min, Time.current.change(hour: 17, min: 00).min
+    assert_equal attendance.end_time.hour, Time.current.change(hour: 17, min: 30).hour
+    assert_equal attendance.end_time.min, Time.current.change(hour: 17, min: 30).min
     assert_nil attendance.work_minutes
   end
 
   # 定時退勤打刻テスト(定時退勤設定なし)
   test "定時退勤打刻(setting_clock_out)_定時退勤設定なし" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: Time.current.change(hour: 8, min: 30),
-      end_time: nil,
-      break_minutes: nil
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 30)
     )
 
-    setting = Setting.new(
-      default_start_time: Time.current.change(hour: 8, min: 30),
-      default_end_time: nil,
-      break_time: 60
+    setting = build_setting(
+      default_end_time: nil
     )
 
     now = Time.current.change(hour: 17, min: 30)
@@ -726,20 +555,12 @@ class AttendanceTest < ActiveSupport::TestCase
 
   # 定時退勤打刻テスト(打刻時間 < 定時退勤時間)
   test "定時退勤打刻(setting_clock_out)_打刻時間 < 定時出勤時間" do
-    attendance = Attendance.new(
-      work_date: Date.current,
-      start_time: Time.current.change(hour: 8, min: 30),
-      end_time: nil,
-      break_minutes: 60
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 30)
     )
 
-    setting = Setting.new(
-      default_start_time: nil,
-      default_end_time: Time.current.change(hour: 17, min: 30),
-      break_time: 60
-      )
-
-      now = Time.current.change(hour: 17, min: 29)
+    setting = build_setting
+    now = Time.current.change(hour: 17, min: 29)
 
       warning, message, result = attendance.setting_clock_out(setting, now)
 
@@ -759,18 +580,12 @@ class AttendanceTest < ActiveSupport::TestCase
 
   # save失敗テスト(setting_clock_out)
   test "save失敗(setting_clock_out)" do
-    attendance = Attendance.new(
+    attendance = build_attendance(
       work_date: nil,
-      start_time: Time.current.change(hour: 8, min: 30),
-      end_time: nil,
-      break_minutes: nil
+      start_time: Time.current.change(hour: 8, min: 30)
     )
 
-    setting = Setting.new(
-      default_end_time: Time.current.change(hour: 17, min: 30),
-      break_time: 60
-    )
-
+    setting = build_setting
     now = Time.current.change(hour: 17, min: 30)
 
     warning, message, result = attendance.setting_clock_out(setting, now)
@@ -795,8 +610,7 @@ class AttendanceTest < ActiveSupport::TestCase
     break_time: 60
     )
 
-    attendance = Attendance.new(
-      work_date: Date.current,
+    attendance = build_attendance(
       start_time: Time.current.change(hour: 18, min: 00),
       end_time: Time.current.change(hour: 9, min: 00),
       break_minutes: 60,
@@ -835,16 +649,20 @@ class AttendanceTest < ActiveSupport::TestCase
     assert_equal "Work date has already been taken", attendance.errors.full_messages.first
   end
 
+  def build_attendance(params = {})
+    Attendance.new({
+      work_date: Date.current,
+      start_time: nil,
+      end_time: nil,
+      break_minutes: nil
+    }.merge(params))
+  end
 
-  setup do
-    # 正常テスト
-    @attendance = Attendance.new(
-      start_time: Time.current.change(hour: 8, min: 30),
-      end_time: Time.current.change(hour: 17, min: 30)
-    )
-
-    @setting = Setting.new(
+  def build_setting(params = {})
+    Setting.new({
+      default_start_time: Time.current.change(hour: 8, min: 30),
+      default_end_time: Time.current.change(hour: 17, min: 30),
       break_time: 60
-    )
+    }.merge(params)) 
   end
 end
