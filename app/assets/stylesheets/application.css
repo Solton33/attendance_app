@@ -31,7 +31,7 @@
 }
 
 .attendances.index .container_list {
-  width: 600px;
+  width: 1000px;
   margin: 0 auto;        /* 横中央 */
   padding: 20px;
   margin-bottom: 60px;   /* ←これが下の余白（重要） */
@@ -146,8 +146,16 @@ th {
   background-color: #f0f0f0;
 }
 
-th:nth-child(1), td:nth-child(1){
+th:nth-child(6), td:nth-child(6), th:nth-child(7), td:nth-child(7){
+  font-size: 14px;
+}
+
+th:nth-child(1), td:nth-child(1), th:nth-child(6), td:nth-child(6){
   width: 150px;
+}
+
+th:nth-child(7), td:nth-child(7){
+  width: 300px;
 }
 
 .today-row {
@@ -167,21 +175,39 @@ tfoot td {
   background-color: #f4efde;
 }
 
+.attendance-status{
+  margin-bottom: 30px
+}
+
+.status-label{
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+
+.status-value{
+  font-size: 20px;
+  font-weight: bold;
+}
+
 .flash-area {
   margin-top: 10px;
   min-height: 20px;
 }
 
-.flash-notice {
+.flash-notice, .status_color_working {
   color: green;
 }
 
-.flash-alert {
+.flash-alert, .status_color_not_started {
   color: red;
 }
 
 .flash-warning {
   background-color: #fff3cd;
   color: #856404;
-  
+}
+
+.status_color_unknown{
+  background-color: rgb(255, 0, 0);
+  color: white;
 }

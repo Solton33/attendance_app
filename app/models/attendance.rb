@@ -220,4 +220,34 @@ class Attendance < ApplicationRecord
     # 日数と定時の勤務時間で合計算出
     work_days * daily_minutes
   end
+
+  #################### 出勤状況判定処理 ########################
+  def attendance_status
+    if start_time.nil? && end_time.present?
+      "勤務終了(出勤なし)"
+    elsif start_time.nil? && end_time.nil?
+      "未出勤"
+    elsif start_time.present? && end_time.nil?
+      "勤務中"
+    elsif start_time.present? && end_time.present?
+      "勤務終了"
+    else
+      "出勤状況を確認できません"
+    end
+  end
+
+  def attendance_status_color
+    if start_time.nil? && end_time.present?
+      "status_color_not_started"
+    elsif start_time.nil? && end_time.nil?
+      "status_color_off_started"
+    elsif start_time.present? && end_time.nil?
+      "status_color_working"
+    elsif start_time.present? && end_time.present?
+      "status_color_work_ended"
+    else
+      "status_color_unknown"
+    end
+  end
+
 end

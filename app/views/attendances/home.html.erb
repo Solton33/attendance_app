@@ -2,6 +2,14 @@
 
   <div class="container">
 
+    <!-- 勤怠状況 -->
+    <div class="attendance-status">
+      <div class="status-label">勤怠状況</div>
+        <div class = <%= @attendance.attendance_status_color %>>
+          <div class="status-value"><%= @attendance.attendance_status %></div>
+        </div>
+    </div>
+
     <!-- 日付 -->
     <div class="date">
       <%= Date.current.strftime("%Y-%m-%d (%a)") %>
