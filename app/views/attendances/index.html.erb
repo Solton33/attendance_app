@@ -24,6 +24,8 @@
           <th>退勤</th>
           <th>休憩(分)</th>
           <th>勤務時間</th>
+          <th>勤務状況</th>
+          <th>備考欄</th>
         </tr>
       </thead>
         <!-- 一覧 -->
@@ -37,7 +39,11 @@
                 <td><%= work_list.end_time&.strftime("%H:%M") %></td>
                 <td><%= work_list.break_minutes %></td>
                 <td><%= work_minutes_display(work_list) %></td>
+                <td class="<%= work_list.attendance_status_color %>"><%= work_list.attendance_status %></td>
+                <td><%= "備考欄(仮)" %></td>
               <% else %>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
