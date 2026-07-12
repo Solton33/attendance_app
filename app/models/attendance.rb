@@ -222,32 +222,37 @@ class Attendance < ApplicationRecord
   end
 
   #################### 出勤状況判定処理 ########################
+  # 出勤一覧の出勤状況表示
   def attendance_status
-    if start_time.nil? && end_time.present?
-      "勤務終了(出勤なし)"
-    elsif start_time.nil? && end_time.nil?
-      "未出勤"
-    elsif start_time.present? && end_time.nil?
-      "勤務中"
-    elsif start_time.present? && end_time.present?
-      "勤務終了"
+    case
+    when start_time.nil? && end_time.present?
+        "勤務終了(出勤なし)"
+    when start_time.nil?
+        "未出勤"
+    when end_time.nil?
+        "勤務中"
     else
-      "出勤状況を確認できません"
+        "勤務終了"
     end
   end
 
+  # 出勤一覧の出勤状況の色付け表示
   def attendance_status_color
-    if start_time.nil? && end_time.present?
-      "status_color_not_started"
-    elsif start_time.nil? && end_time.nil?
-      "status_color_off_started"
-    elsif start_time.present? && end_time.nil?
-      "status_color_working"
-    elsif start_time.present? && end_time.present?
-      "status_color_work_ended"
+    case attendance_status
+    when "未出勤"
+        "status_color_off_started"
+
+    when "勤務中"
+        "status_color_working"
+
+    when "勤務終了"
+        "status_color_work_ended"
+
+    when "勤務終了(出勤なし)"
+        "status_color_not_started"
+
     else
-      "status_color_unknown"
+        "status_color_unknown"
     end
   end
-
 end

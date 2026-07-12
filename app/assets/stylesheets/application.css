@@ -196,15 +196,18 @@ tfoot td {
 
 .flash-notice, .status_color_working {
   color: green;
+  font-weight: bold;
 }
 
 .flash-alert, .status_color_not_started {
   color: red;
+  font-weight: bold;
 }
 
 .flash-warning {
   background-color: #fff3cd;
   color: #856404;
+  font-weight: bold;
 }
 
 .status_color_unknown{
