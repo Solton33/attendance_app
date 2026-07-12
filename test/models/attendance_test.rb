@@ -164,6 +164,86 @@ class AttendanceTest < ActiveSupport::TestCase
     assert_equal 480, attendance.work_minutes
   end
 
+  ######### attendance_status,attendance_status_color #########
+  # 勤怠状況テスト1
+  test "勤怠状況_勤務終了(出勤なし)" do
+    attendance = build_attendance(
+      start_time: nil,
+      end_time: Time.current.change(hour: 17, min: 30)
+    )
+
+    result = attendance.attendance_status
+    result_color = attendance.attendance_status_color
+
+    p attendance
+    p result
+    p result_color
+
+    assert_equal "勤務終了(出勤なし)", result
+    assert_equal "status_color_not_started", result_color
+  end
+
+  # 勤怠状況テスト2
+  test "勤怠状況_未出勤" do
+    attendance = build_attendance(
+      start_time: nil,
+      end_time: nil
+    )
+
+    result = attendance.attendance_status
+    result_color = attendance.attendance_status_color
+
+    p attendance
+    p result
+    p result_color
+
+    assert_equal "未出勤", result
+    assert_equal "status_color_off_started", result_color
+  end
+
+  # 勤怠状況テスト3
+  test "勤怠状況_勤務中" do
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 30),
+      end_time: nil
+    )
+
+    result = attendance.attendance_status
+    result_color = attendance.attendance_status_color
+
+    p attendance
+    p result
+    p result_color
+
+    assert_equal "勤務中", result
+    assert_equal "status_color_working", result_color
+  end
+
+  # 勤怠状況テスト4
+  test "勤怠状況_勤務終了" do
+    attendance = build_attendance(
+      start_time: Time.current.change(hour: 8, min: 30),
+      end_time: Time.current.change(hour: 17, min: 30)
+    )
+
+    result = attendance.attendance_status
+    result_color = attendance.attendance_status_color
+
+    p attendance
+    p result
+    p result_color
+
+    assert_equal "勤務終了", result
+    assert_equal "status_color_work_ended", result_color
+  end
+
+
+
+
+
+
+  ######### attendance_status_color #########
+
 
   ##### 準正常テスト ###################################################################################
 
