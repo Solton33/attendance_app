@@ -1,5 +1,6 @@
 class Attendance < ApplicationRecord
   belongs_to :setting
+  has_many :attendance_requests, dependent: :destroy
 
   validates :work_date, presence: true
   validates :work_date, uniqueness: true

@@ -19,13 +19,14 @@
       <!-- 項目 -->
       <thead>
         <tr>
-          <th>日付</th>
-          <th>出勤</th>
-          <th>退勤</th>
-          <th>休憩(分)</th>
-          <th>勤務時間</th>
-          <th>勤務状況</th>
-          <th>備考欄</th>
+          <th class="col-request">申請</th>
+          <th class="col-date">日付</th>
+          <th class="col-time">出勤</th>
+          <th class="col-time">退勤</th>
+          <th class="col-break">休憩(分)</th>
+          <th class="col-work">勤務時間</th>
+          <th class="col-status">勤務状況</th>
+          <th class="col-note">備考欄</th>
         </tr>
       </thead>
         <!-- 一覧 -->
@@ -33,21 +34,22 @@
         <% @dates.each do |date| %>
           <% work_list = @attendances.find { |list| list.work_date == date } %>
             <tr class="<%= row_class(date) %>">
-              <td><%= date.strftime("%m / %d (#{%w(日 月 火 水 木 金 土)[date.wday]})") %></td>
+              <td class="col-request"><%= "申請(仮)" %></td>
+              <td class="col-date"><%= date.strftime("%m / %d (#{%w(日 月 火 水 木 金 土)[date.wday]})") %></td>
               <% if work_list %>
-                <td><%= work_list.start_time&.strftime("%H:%M") %></td>
-                <td><%= work_list.end_time&.strftime("%H:%M") %></td>
-                <td><%= work_list.break_minutes %></td>
-                <td><%= work_minutes_display(work_list) %></td>
-                <td class="<%= work_list.attendance_status_color %>"><%= work_list.attendance_status %></td>
-                <td><%= "備考欄(仮)" %></td>
+                <td class="col-time"><%= work_list.start_time&.strftime("%H:%M") %></td>
+                <td class="col-time"><%= work_list.end_time&.strftime("%H:%M") %></td>
+                <td class="col-break"><%= work_list.break_minutes %></td>
+                <td class="col-work"><%= work_minutes_display(work_list) %></td>
+                <td class="col-status <%= work_list.attendance_status_color %>"><%= work_list.attendance_status %></td>
+                <td class="col-note"><%= "備考欄(仮)" %></td>
               <% else %>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td class="col-time"></td>
+                <td class="col-time"></td>
+                <td class="col-break"></td>
+                <td class="col-work"></td>
+                <td class="col-status"></td>
+                <td class="col-note"></td>
               <% end %>
             </tr> 
         <% end %>
@@ -57,12 +59,16 @@
       <tfoot>
         <tr>
           <td colspan="2">総勤務時間</td>
-          <td colspan="4"><%= format_minutes(@total_work_minutes) %></td>
+          <td colspan="1"><%= format_minutes(@total_work_minutes) %></td>
+          <td colspan="2">申請状況</td>
+          <td colspan="3">申請中/申請完了(仮置き)</td>
         </tr>
 
         <tr>
           <td colspan="2">月の予想総勤務時間</td>
-          <td colspan="4"><%= @expected_work_minutes ? format_minutes(@expected_work_minutes) : "-" %></td>
+          <td colspan="1"><%= @expected_work_minutes ? format_minutes(@expected_work_minutes) : "-" %></td>
+          <td colspan="2">申請対象日</td>
+          <td colspan="4">申請中の日付表示/-(仮置き)</td>
         </tr>
       </tfoot>
     </table>
