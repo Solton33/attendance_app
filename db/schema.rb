@@ -10,7 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_03_085244) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_19_102519) do
+  create_table "attendance_requests", force: :cascade do |t|
+    t.integer "attendance_id", null: false
+    t.datetime "created_at", null: false
+    t.text "reason", null: false
+    t.datetime "requested_at", null: false
+    t.integer "requested_break_minutes"
+    t.datetime "requested_end_time"
+    t.datetime "requested_start_time"
+    t.integer "status", default: 0, null: false
+    t.date "target_date"
+    t.datetime "updated_at", null: false
+    t.index ["attendance_id"], name: "index_attendance_requests_on_attendance_id"
+  end
+
   create_table "attendances", force: :cascade do |t|
     t.integer "break_minutes"
     t.datetime "created_at", null: false
@@ -32,5 +46,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_085244) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "attendance_requests", "attendances"
   add_foreign_key "attendances", "settings"
 end

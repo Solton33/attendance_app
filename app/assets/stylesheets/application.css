@@ -146,15 +146,23 @@ th {
   background-color: #f0f0f0;
 }
 
-th:nth-child(6), td:nth-child(6), th:nth-child(7), td:nth-child(7){
+td.col-status, td.col-note {
   font-size: 14px;
 }
 
-th:nth-child(1), td:nth-child(1), th:nth-child(6), td:nth-child(6){
+.col-request{
+  width: 90px;
+}
+
+.col-time, .col-break, .col-work{
+  width: 100px;
+}
+
+.col-date, .col-status{
   width: 150px;
 }
 
-th:nth-child(7), td:nth-child(7){
+.col-note{
   width: 300px;
 }
 
