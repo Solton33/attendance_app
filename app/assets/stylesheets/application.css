@@ -9,7 +9,7 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
-.attendances.home, .settings {
+.attendances.home, .settings, .attendance_requests.new {
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -20,6 +20,10 @@
 
 .container {
   width: 400px;
+  text-align: center;
+}
+
+.container-form {
   text-align: center;
 }
 
@@ -87,7 +91,6 @@
   font-size: 20px;
 }
 
-
 .setting_time {
   display: flex;
   align-items: center;
@@ -99,7 +102,6 @@
   width: 140px;       /* ←ここ重要（揃える） */
   text-align: left;   /* ラベルは左寄せ */
   font-size:20px;
-  
 }
 
 .setting_time input {
@@ -195,6 +197,50 @@ tfoot td {
 .status-value{
   font-size: 20px;
   font-weight: bold;
+}
+
+.form-group label {
+  display: inline-block;
+  width: 180px;
+  padding-right: 20px;
+  text-align: left;
+  font-size: 20px;
+}
+
+.form-group input {
+  font-size: 20px;
+  height: 30px;
+  text-align: center;
+}
+
+.form-workDate, .form-startTime, .form-endTime, .form-breakMinutes, .form-note {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.form-workDate input {
+  width: 150px;
+  text-align: center;
+}
+
+.form-startTime input, .form-endTime input, .form-breakMinutes input {
+  width: 100px;
+  text-align: center;
+}
+
+.form-note textarea {
+  min-width: 400px;
+  min-height: 50px;
+  font-size: 18px;
+  text-align: left;
+  resize: vertical;
+}
+
+.form-actions input[type="submit"] {
+  text-align: center;
+  width: 100px;
+  height: 40px;
 }
 
 .flash-area {
