@@ -77,16 +77,13 @@
 
   
   </div>
-
-
-
-
-
-
-
-
-
-
+      
+  <!-- 申請後アラート表示 -->
+  <% if notice.present? %>
+    <script>
+      alert("<%= notice %>");
+    </script>
+  <% end %>
 
 
 </body>

@@ -24,5 +24,5 @@ Rails.application.routes.draw do
 
   resource :setting, only: [ :show, :update ]
 
-  resources :attendance_requests, only: [:new, :create]
+  resources :attendance_requests, only: [ :new, :create ]
 end
