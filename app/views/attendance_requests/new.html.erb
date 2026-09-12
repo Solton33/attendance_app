@@ -8,32 +8,32 @@
 
       <div class="form-group">
         <div class="form-workDate">
-          <%= f.label :work_date, "勤務日" %>
-          <%= f.date_field :work_date, required: true %>
+          <%= f.label :target_date, "勤務日" %>
+          <%= f.date_field :target_date, required: true %>
         </div>
 
         <div class="form-startTime">
-          <%= f.label :start_time, "出勤時刻" %>
-          <%= f.time_field :start_time, required: true %>
+          <%= f.label :requested_start_time, "出勤時刻" %>
+          <%= f.time_field :requested_start_time, required: true %>
         </div>
 
         <div class="form-endTime">
-          <%= f.label :end_time, "退勤時刻" %>
-          <%= f.time_field :end_time, required: true %>
+          <%= f.label :requested_end_time, "退勤時刻" %>
+          <%= f.time_field :requested_end_time, required: true %>
         </div>
 
         <div class="form-breakMinutes">
-          <%= f.label :break_minutes, "休憩時間（分）" %>
-          <%= f.number_field :break_minutes, min: 0, required: true %>
+          <%= f.label :requested_break_minutes, "休憩時間（分）" %>
+          <%= f.number_field :requested_break_minutes, min: 0, required: true %>
         </div>
 
         <div class="form-note">
-          <%= f.label :note, "備考" %>
-          <%= f.text_area :note %>
+          <%= f.label :reason, "申請理由/備考" %>
+          <%= f.text_area :reason %>
         </div>
 
         <div class="form-actions">
-          <%= f.submit "申請する", class: "btn btn-primary" %>
+          <%= f.submit "申請", class: "btn btn-primary" %>
         </div>
       </div>
 
