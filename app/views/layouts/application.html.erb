@@ -24,6 +24,14 @@
   </head>
 
   <body>
+    <nav class="global-nav">
+      <div class="nav-links">
+        <%= link_to "ホーム", root_path %>
+        <%= link_to "勤怠一覧", attendances_path %>
+        <%= link_to "申請", new_attendance_request_path %>
+        <%= link_to "定時時間設定", setting_path %>
+      </div>
+    </nav>    
     <%= yield %>
   </body>
 </html>

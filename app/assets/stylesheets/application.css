@@ -9,12 +9,53 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
-.attendances.home, .settings, .attendance_requests.new {
+/* .attendances.home, .settings, .attendance_requests.new {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #f4f6f9;
+  font-family: sans-serif;
+} */
+
+body {
+  margin: 0;
+  background-color: #eef3f8;
+}
+
+.global-nav {
+  width: 100%;
+  text-align: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-links a {
+  padding: 8px 20px;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #3b82f6;
+  background-color: #ffffff;
+
+  &:hover {
+    background-color: #6b9bc4;    
+    color: #ffffff;
+  }
+}
+
+.attendances.home, .settings, .attendance_requests.new {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
   font-family: sans-serif;
 }
 
@@ -30,8 +71,7 @@
 .attendances.index {
   display: block;        /* flexやめる */
   height: auto;          /* 高さ固定やめる */
-  background-color: #f4f6f9;
-  padding-top: 30px;     /* 上に余白 */
+  /* padding-top: 30px;     上に余白 */
 }
 
 .attendances.index .container_list {
