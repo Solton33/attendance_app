@@ -14,22 +14,22 @@
 
         <div class="form-startTime">
           <%= f.label :requested_start_time, "出勤時刻" %>
-          <%= f.time_field :requested_start_time, required: true %>
+          <%= f.time_field :requested_start_time %>
         </div>
 
         <div class="form-endTime">
           <%= f.label :requested_end_time, "退勤時刻" %>
-          <%= f.time_field :requested_end_time, required: true %>
+          <%= f.time_field :requested_end_time %>
         </div>
 
         <div class="form-breakMinutes">
           <%= f.label :requested_break_minutes, "休憩時間（分）" %>
-          <%= f.number_field :requested_break_minutes, min: 0, required: true %>
+          <%= f.number_field :requested_break_minutes, min: 0 %>
         </div>
 
         <div class="form-note">
           <%= f.label :reason, "申請理由/備考" %>
-          <%= f.text_area :reason %>
+          <%= f.text_area :reason, required: true%>
         </div>
 
         <div class="form-actions">
