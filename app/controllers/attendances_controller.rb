@@ -26,6 +26,10 @@ class AttendancesController < ApplicationController
 
     # 月の予想総労働時間の取得
     @expected_work_minutes = Attendance.expected_work_minutes(@dates, @setting)
+
+    ### 申請状況表示画面 ###
+    # 表示月の申請を取得
+    @attendance_requests = AttendanceRequest.joins(:attendance).where(attendances: { work_date: @dates }).order(:target_date)
   end
 
   ############################################ 手動出退勤処理 ################################################
